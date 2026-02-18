@@ -54,8 +54,13 @@ if ($LASTEXITCODE -ne 0) {
 $user = & $gh api user --jq .login
 if (-not $user) { throw "Unable to determine GitHub username." }
 
-& $gh repo view $RepoName --json name *> $null
-$repoExists = $LASTEXITCODE -eq 0
+$repoExists = $false
+try {
+    & $gh repo view $RepoName --json name 2>$null *> $null
+    $repoExists = $LASTEXITCODE -eq 0
+} catch {
+    $repoExists = $false
+}
 
 if (-not $repoExists) {
     if ($Private) {
