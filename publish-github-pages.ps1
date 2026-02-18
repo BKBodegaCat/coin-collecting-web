@@ -14,6 +14,11 @@ $gh = "C:\Program Files\GitHub CLI\gh.exe"
 if (-not (Test-Path $git)) { throw "Git not found at $git" }
 if (-not (Test-Path $gh)) { throw "GitHub CLI not found at $gh" }
 
+$gitDir = Split-Path -Parent $git
+if ($env:Path -notlike "*$gitDir*") {
+    $env:Path = "$gitDir;$env:Path"
+}
+
 if (-not (Test-Path ".\index.html")) {
     throw "index.html not found in $workspace"
 }
