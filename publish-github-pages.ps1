@@ -4,6 +4,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$PSNativeCommandUseErrorActionPreference = $false
 
 $workspace = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $workspace
@@ -53,8 +54,10 @@ if ($LASTEXITCODE -ne 0) {
 $user = & $gh api user --jq .login
 if (-not $user) { throw "Unable to determine GitHub username." }
 
-& $gh repo view $RepoName *> $null
-if ($LASTEXITCODE -ne 0) {
+& $gh repo view $RepoName --json name *> $null
+$repoExists = $LASTEXITCODE -eq 0
+
+if (-not $repoExists) {
     if ($Private) {
         & $gh repo create $RepoName --private --source . --remote origin --push
     } else {
