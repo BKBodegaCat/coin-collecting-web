@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Silver Calc Mobile</title>
+    <style>
+        body { font-family: -apple-system, sans-serif; background: #1a1a1a; color: white; padding: 20px; }
+        .card { background: #2d2d2d; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #444; }
+        h2 { text-align: center; color: #00d1b2; margin-bottom: 20px; }
+        
+        label { display: block; margin: 15px 0 5px; font-size: 14px; color: #aaa; font-weight: bold; }
+        input, select { width: 100%; padding: 15px; background: #3d3d3d; border: 2px solid #444; color: white; border-radius: 10px; font-size: 18px; box-sizing: border-box; }
+        
+        .radio-container { display: flex; gap: 10px; margin-bottom: 10px; }
+        .radio-box { flex: 1; text-align: center; background: #3d3d3d; padding: 12px; border-radius: 10px; border: 2px solid #444; position: relative; }
+        .radio-box input { position: absolute; opacity: 0; }
+        .radio-box.active { border-color: #00d1b2; background: #00d1b222; }
+        
+        #btnCalc { width: 100%; padding: 18px; background: #00d1b2; color: #1a1a1a; border: none; border-radius: 10px; font-size: 20px; font-weight: bold; margin-top: 20px; cursor: pointer; -webkit-appearance: none; }
+        #btnCalc:active { background: #00f0ce; transform: scale(0.98); }
+        
+        #resultArea { margin-top: 25px; padding: 20px; background: #252525; border-radius: 10px; border: 2px dashed #00d1b2; text-align: center; display: none; }
+        .total-price { font-size: 32px; font-weight: bold; color: #00d1b2; display: block; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Silver Melt Tool</h2>
+
+    <label>Price Source</label>
+    <div class="radio-container">
+        <div class="radio-box active" id="boxToday">
+            <input type="radio" name="priceType" id="typeToday" checked>
+            <span id="marketLabel">Market ($72.54)</span>
+        </div>
+        <div class="radio-box" id="boxCustom">
+            <input type="radio" name="priceType" id="typeCustom">
+            <span>Custom</span>
+        </div>
+    </div>
+
+    <div id="customInput" style="display:none;">
+        <label>Enter Silver Price ($/oz)</label>
+        <input type="number" id="manualPrice" inputmode="decimal" placeholder="0.00">
+    </div>
+
+    <label>Total Face Value ($)</label>
+    <input type="number" id="faceValue" inputmode="decimal" placeholder="e.g. 5.50">
+
+    <label>Coin Purity</label>
+    <select id="purity">
+        <option value="0.715">90% Dimes/Quarters/Halves</option>
+        <option value="0.7734">90% Silver Dollars</option>
+        <option value="0.295">40% Kennedy Halves</option>
+    </select>
+
+    <button type="button" id="btnCalc">CALCULATE VALUE</button>
+
+    <div id="resultArea">
+        <span style="color:#888; font-size: 14px;">ESTIMATED MELT VALUE</span>
+        <span class="total-price" id="finalValue">$0.00</span>
+    </div>
+</div>
+
+<script>
+    // Constants
+    const MARKET_PRICE = 72.54;
+
+    // Toggle Price logic
+    document.getElementById('boxToday').onclick = function() {
+        document.getElementById('typeToday').checked = true;
+        this.classList.add('active');
+        document.getElementById('boxCustom').classList.remove('active');
+        document.getElementById('customInput').style.display = 'none';
+    };
+
+    document.getElementById('boxCustom').onclick = function() {
+        document.getElementById('typeCustom').checked = true;
+        this.classList.add('active');
+        document.getElementById('boxToday').classList.remove('active');
+        document.getElementById('customInput').style.display = 'block';
+    };
+
+    // Calculation Logic
+    document.getElementById('btnCalc').addEventListener('click', function() {
+        let spot = MARKET_PRICE;
+        if(document.getElementById('typeCustom').checked) {
+            spot = parseFloat(document.getElementById('manualPrice').value);
+        }
+
+        const face = parseFloat(document.getElementById('faceValue').value);
+        const mult = parseFloat(document.getElementById('purity').value);
+
+        if(!face || isNaN(face) || isNaN(spot)) {
+            alert("Please enter a valid Face Value.");
+            return;
+        }
+
+        const total = face * mult * spot;
+        
+        const resultArea = document.getElementById('resultArea');
+        const finalValue = document.getElementById('finalValue');
+        
+        resultArea.style.display = 'block';
+        finalValue.innerText = '$' + total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        
+        // Scroll to result on small screens
+        resultArea.scrollIntoView({ behavior: 'smooth' });
+    });
+</script>
+
+</body>
+</html>
