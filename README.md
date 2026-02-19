@@ -36,3 +36,19 @@ Your site will be available at:
 `https://<your-username>.github.io/<repo-name>/`
 
 It can take 1–3 minutes after first publish.
+
+## Quick update checklist
+
+For future revisions, use this 30-second flow:
+
+1. Edit your source page (`Silver Value.html`).
+2. Copy the final version into `index.html` (this is what GitHub Pages serves).
+3. Publish:
+
+```powershell
+git add "Silver Value.html" index.html README.md
+git commit -m "Update site"
+git push
+```
+
+4. Refresh your site URL (use `Ctrl+F5` if cache is stale).
