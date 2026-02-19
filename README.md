@@ -42,8 +42,15 @@ It can take 1–3 minutes after first publish.
 For future revisions, use this 30-second flow:
 
 1. Edit your source page (`Silver Value.html`).
-2. Copy the final version into `index.html` (this is what GitHub Pages serves).
-3. Publish:
+2. Run one command:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\update-site.ps1
+```
+
+This script automatically copies `Silver Value.html` to `index.html`, commits, and pushes.
+
+3. Manual fallback if needed:
 
 ```powershell
 git add "Silver Value.html" index.html README.md
